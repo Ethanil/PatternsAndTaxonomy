@@ -16,6 +16,7 @@ const createWindow = () => {
       nodeIntegration: true,
     },
     show: false,
+    autoHideMenuBar: true,
   });
 
   // and load the index.html of the app.
