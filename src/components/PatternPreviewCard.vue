@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-2" elevation="12" border="xl" density="compact">
+  <v-card class="pa-2" elevation="12" density="compact">
     <v-card-title>
       {{ patternTitle }}
     </v-card-title>
@@ -18,7 +18,6 @@
 </template>
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Pattern } from "./PatternCard.vue";
 
 const props = defineProps<{ patternTitle: string }>();
 const pattern = computed(() => {
