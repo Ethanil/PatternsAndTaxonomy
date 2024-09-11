@@ -1,8 +1,8 @@
 <template>
   <v-card>
-          <v-navigation-drawer>
+          <v-navigation-drawer permanent>
             <template #prepend>Choose Action Verb to Filter Patterns</template>
-            <v-list selectable mandatory open-strategy="single" v-model:selected="chosenActionverb">
+            <v-list selectable mandatory open-strategy="single" v-model:selected="chosenActionverb" active-class="active-item">
             <v-list-item :value="-1">All</v-list-item>
             <template v-for="(verbsArray, category) in categorizedActionVerbs">
               <v-list-group :value="category">
@@ -61,8 +61,14 @@ const patterns = computed(() => {
 })});
 const chosenPattern = defineModel("chosenPattern");
 const handleLinkClick = function (targetName) {
-  chosenPattern.value = (patterns as { title: string }[]).find(
+  chosenPattern.value = (patterns.value as { title: string }[]).find(
     (pattern) => pattern["title"] && pattern.title === targetName
   );
+  window.scrollTo(0, 0);
 };
 </script>
+<style>
+.active-item{
+  background-color: rgb(162, 204, 190);
+}
+</style>

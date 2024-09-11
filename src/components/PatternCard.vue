@@ -34,81 +34,16 @@
       {{ pattern.rawCSVRow[2] }}
     </v-card-text>
     <v-card-text>{{ pattern.longDescription }}</v-card-text>
-    <v-card-text>
-      <h3>Examples</h3>
-      <p v-for="example in pattern.Examples">
-        <template v-for="text in example">
-          <template v-if="typeof text != 'string'">
-            <a
-              v-if="text.type === 'link'"
-              href="text.targetName"
-              @click.stop.prevent="emit('linkClicked', text.targetName)"
-            >
-              {{ text.text }}
-            </a>
-            <component v-else-if="text.type === 'header'" :is="text.name">
-              {{ text.text }}
-            </component>
-          </template>
-          <span v-else>{{ text }}</span>
-        </template>
-      </p>
-    </v-card-text>
-    <v-card-text>
-      <h2>Using the pattern</h2>
-      <p v-for="using in pattern.UsingThePattern">
-        <template v-for="text in using">
-          <template v-if="typeof text != 'string'">
-            <a
-              v-if="text.type === 'link'"
-              href="text.targetName"
-              @click.stop.prevent="emit('linkClicked', text.targetName)"
-              >{{ text.text }}</a
-            >
-            <component :is="text.name">{{ text.text }}</component>
-          </template>
-          <span v-else>{{ text }}</span>
-        </template>
-      </p>
-    </v-card-text>
-    <v-card-text>
-      <h2>Consequences</h2>
-      <p v-for="consequence in pattern.Consequences">
-        <template v-for="text in consequence">
-          <template v-if="typeof text != 'string'">
-            <a
-              v-if="text.type === 'link'"
-              href="text.targetName"
-              @click.stop.prevent="emit('linkClicked', text.targetName)"
-              >{{ text.text }}</a
-            >
-            <component :is="text.name">{{ text.text }}</component>
-          </template>
-          <span v-else>{{ text }}</span>
-        </template>
-      </p>
-    </v-card-text>
-    <v-card-text>
-      <h2>Relations</h2>
-      <p v-for="relation in pattern.Relations">
-        <template v-for="text in relation">
-          <template v-if="typeof text != 'string'">
-            <a
-              v-if="text.type === 'link'"
-              href="text.targetName"
-              @click.stop.prevent="emit('linkClicked', text.targetName)"
-              >{{ text.text }}</a
-            >
-            <component :is="text.name">{{ text.text }}</component>
-          </template>
-          <span v-else>{{ text }}</span>
-        </template>
-      </p>
-    </v-card-text>
+    <PatternChapter title="Examples" :rows="pattern.Examples" @linkClicked="(target) => emit('linkClicked', target)"></PatternChapter>
+    <PatternChapter title="Using the pattern" :rows="pattern.UsingThePattern" @linkClicked="(target) => emit('linkClicked', target)"></PatternChapter>
+    <PatternChapter title="Consequences" :rows="pattern.Consequences" @linkClicked="(target) => emit('linkClicked', target)"></PatternChapter>
+    <PatternChapter title="Relations" :rows="pattern.Relations" @linkClicked="(target) => emit('linkClicked', target)"></PatternChapter>
   </v-card>
 </template>
 <script setup lang="ts">
-type Element = {
+import PatternChapter from './PatternChapter.vue';
+
+export type Element = {
   [key: string]:
     | string
     | {
@@ -119,18 +54,18 @@ type Element = {
         text: string;
       };
 };
-type Row = {
+export type Row = {
   [key: string]: Element;
 };
-type Pattern = {
+export type Pattern = {
   title: string;
   shortDescription: string;
   longDescription: string;
   Examples: { [key: string]: Row };
-  UsingThePattern: Row;
-  Consequences: Row;
-  Relations: Row;
-  actionVerbs: {[key:string]: boolean;};
+  UsingThePattern: { [key: string]: Row };
+  Consequences: { [key: string]: Row };
+  Relations: { [key: string]: Row };
+  actionVerbs: { [key: string]: boolean };
   rawCSVRow: string[];
 };
 const props = defineProps<{ pattern: Pattern }>();
