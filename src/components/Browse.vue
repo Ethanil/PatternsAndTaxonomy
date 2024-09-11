@@ -2,21 +2,40 @@
   <v-card>
           <v-navigation-drawer permanent>
             <template #prepend>Choose Action Verb to Filter Patterns</template>
-            <v-list selectable mandatory open-strategy="single" v-model:selected="chosenActionverb" active-class="active-item">
-            <v-list-item :value="-1">All</v-list-item>
+            <v-list selectable mandatory open-strategy="single" v-model:selected="chosenActionverb">
+            <v-list-item :value="-1"  active-class="active-item">All</v-list-item>
             <template v-for="(verbsArray, category) in categorizedActionVerbs">
               <v-list-group :value="category">
                 <template v-slot:activator="{ props }">
                   <v-list-item v-bind="props" :title="category"></v-list-item>
                 </template>
                 <template v-for="verbs of verbsArray">
-                  <v-list-item :value="verbs.value"><template v-for="verb in verbs.title"><span>{{ verb }}</span><br></template></v-list-item>
+                  <v-list-item :value="verbs.value"  active-class="active-item"><template v-for="verb in verbs.title"><span>{{ verb }}</span><br></template></v-list-item>
                 </template>
               </v-list-group>
             </template>
           </v-list>
           </v-navigation-drawer>
-          <v-container>
+          <v-container v-if="!chosenPattern" fluid>
+            <v-row>
+              <v-col 
+              v-for="pattern in patterns"
+              cols="3">
+                <PatternPreviewCard :patternTitle="pattern.title" height="100%" @click="chosenPattern=pattern"></PatternPreviewCard>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-container v-else>
+            <v-row><v-btn color="primary" @click="chosenPattern=null">back</v-btn></v-row>
+            <v-row>
+              <PatternCard
+                :pattern="chosenPattern"
+                @linkClicked="handleLinkClick"
+              ></PatternCard>
+            </v-row>            
+          </v-container>
+          
+          <!-- <v-container>
           <v-row>
             <v-col>
               <v-autocomplete
@@ -44,12 +63,13 @@
               ></PatternCard>
             </v-col>
           </v-row>
-    </v-container>
+    </v-container> -->
   </v-card>
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
 import PatternCard from "./PatternCard.vue";
+import PatternPreviewCard from './PatternPreviewCard.vue';
 const chosenActionverb = defineModel("chosenActionverb", {default:[-1]});
 const categorizedActionVerbs = window.resources.categorizedActionVerbs as {
   [key: string]: string[][];

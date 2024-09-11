@@ -4,11 +4,13 @@
       {{ patternTitle }}
     </v-card-title>
     <v-card-subtitle
+    v-if="pattern"
       style="text-overflow: unset; white-space: wrap; opacity: 1"
       >{{ pattern.shortDescription }}</v-card-subtitle
     >
     <v-divider style="opacity: 1" class="my-2"></v-divider>
     <v-card-subtitle
+    v-if="pattern"
       style="text-overflow: unset; white-space: wrap; opacity: 1"
       >{{ pattern.longDescription }}</v-card-subtitle
     >
