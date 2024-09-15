@@ -9,7 +9,6 @@
             </h1>
           </v-card-title>
           <v-card-subtitle>{{ pattern.shortDescription }}</v-card-subtitle>
-          <v-card-text> </v-card-text>
           <v-card-text>{{ pattern.longDescription }}</v-card-text>
           <PatternChapter
             title="Examples"

@@ -81,20 +81,6 @@
       </v-row>
     </v-container>
     <PatternBrowser v-else :initial-chosen-pattern="chosenPattern" @back="chosenPattern=null"></PatternBrowser>
-    <!-- <v-container v-else>
-      <v-row>
-        <v-btn color="primary" @click="() => {chosenPattern = null; scrollToTop();}" class="mb-3">
-          back
-        </v-btn>
-      </v-row>
-      <v-row>
-        <PatternCard
-          :pattern="chosenPattern"
-          elevation="6"
-          @linkClicked="handleLinkClick"
-        ></PatternCard>
-      </v-row>
-    </v-container> -->
 
   </v-card>
 </template>
@@ -122,12 +108,5 @@ const patterns = ref([] as Pattern[])
 const chosenPattern = defineModel("chosenPattern");
 const scrollToTop = function () {
   window.scrollTo(0, 0);
-};
-const handleLinkClick = function (targetName) {
-  console.log(targetName);
-  chosenPattern.value = (window.resources.patterns as { title: string }[]).find(
-    (pattern) => pattern["title"] && pattern.title === targetName
-  );
-  scrollToTop();
 };
 </script>

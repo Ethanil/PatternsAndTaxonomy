@@ -23,7 +23,7 @@
 
           <component :is="element.name">{{ element.text }}</component>
         </template>
-        <span v-else>{{ element }}</span>
+        <span v-else>{{ element }} </span>
       </template>
     </p>
   </v-card-text>
