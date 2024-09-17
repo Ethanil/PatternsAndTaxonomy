@@ -34,6 +34,7 @@
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
+    "pinia": "^2.2.2",
     "vue": "^3.4.38",
     "vuetify": "^3.7.1"
   }

@@ -32,16 +32,16 @@
           ></PatternChapter>
         </v-col>
         <v-col cols="auto">
-          <span style="display: block; width: 210px;">{{ pattern.rawCSVRow[2] }}</span>
+          <span style="display: block; width: 210px;">{{ pattern.rawCSVRow![2] }}</span>
           <v-table density="compact" class="action-verb-table">
             <tbody>
               <tr v-for="([verbs, value]) in computedActionVerbs">
                 <td>
                   <template v-for="verb in verbs">{{ verb }}<br></template></td>
-                <td :style="(value ? 'background:palegreen;' : '') + ' width: 75px;'" >
+                <td :style="(value ? 'background:green;' : '') + ' width: 75px;'" >
                   <v-icon
                     v-if="value"
-                    icon="mdi-check"
+                    icon="mdi-check-bold"
                     class="action-verb-icon"
                   ></v-icon>
                 </td>
@@ -56,36 +56,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import PatternChapter from "./PatternChapter.vue";
+import { Pattern } from "../types/types";
 
-export type Element = {
-  [key: string]:
-    | string
-    | {
-        type: string;
-        targetFile?: string;
-        targetName?: string;
-        name?: string;
-        text: string;
-      };
-};
-export type Row = {
-  [key: string]: Element;
-};
-export type Pattern = {
-  title: string;
-  shortDescription: string;
-  longDescription: string;
-  Examples: { [key: string]: Row };
-  UsingThePattern: { [key: string]: Row };
-  Consequences: { [key: string]: Row };
-  Relations: { [key: string]: Row };
-  actionVerbs: { [key: string]: boolean };
-  rawCSVRow: string[];
-};
+
 const props = defineProps<{ pattern: Pattern }>();
 const emit = defineEmits(["linkClicked"]);
 const computedActionVerbs = computed(() => {
-  return Object.entries(props.pattern.actionVerbs).map(([verbs, value]) => {
+  return Object.entries(props.pattern.actionVerbs!).map(([verbs, value]) => {
     return [verbs.split("\r\n"), value];
   });
 });

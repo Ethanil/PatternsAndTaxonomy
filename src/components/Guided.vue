@@ -49,15 +49,15 @@
       </v-card>
     </v-dialog>
     <v-navigation-drawer permanent>
-      <template #prepend>Choose Action Verb to get 3 random patterns</template>
+      <template #prepend><v-card><v-card-text>Choose Action Verb to get 3 random patterns</v-card-text></v-card></template>
       <v-list open-strategy="single">
-        <template v-for="(verbsArray, category) in categorizedActionVerbs">
+        <template v-for="(verbsArray, category) in store.categorizedActionVerbs">
           <v-list-group :value="category">
             <template v-slot:activator="{ props }">
               <v-list-item v-bind="props" :title="category"></v-list-item>
             </template>
             <template v-for="verbs of verbsArray">
-              <v-list-item @click="showRandomPatterns(verbs)">
+              <v-list-item class="py-2"  @click="showRandomPatterns(verbs.value)">
                 <template v-for="verb in verbs.title">
                   <span>{{ verb }} </span>
                   <br />
@@ -73,7 +73,7 @@
         <v-col v-for="pattern in patterns" lg="4" md="6" sm="12">
           <PatternPreviewCard
             :patternTitle="pattern.title"
-            height="100%" 
+            height="100%"
             @click="
             chosenPattern = pattern;  scrollToTop();"
           ></PatternPreviewCard>
@@ -85,26 +85,24 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import PatternCard, { Pattern } from './PatternCard.vue';
+import { ref } from 'vue';
 import PatternPreviewCard from './PatternPreviewCard.vue';
 import PatternBrowser from './PatternBrowser.vue';
+import { usePatternsAndActionverbsStore } from "../stores/patternsAndActionverbs";
+import { Pattern } from '../types/types';
+const store = usePatternsAndActionverbsStore()
 
-const actionVerbs = window.resources.actionVerbs;
 const helpModal = defineModel("helpModal", { default: true });
-const chosenActionverb = defineModel("chosenActionverb", { default: [-1] });
-const categorizedActionVerbs = window.resources.categorizedActionVerbs as {
-  [key: string]: string[][];
-};
-const showRandomPatterns = function (actionVerb) {
-  const filteredPatterns = window.resources.patterns.filter((pattern) => Object.entries(pattern.actionVerbs)[actionVerb.value][1])
+defineModel("chosenActionverb", { default: [-1] });
+const showRandomPatterns = function (actionVerb: number) {
+  const filteredPatterns = store.filteredPatterns(actionVerb)
   patterns.value = [];
   for(let i = 0; i < 3; i++){
     patterns.value.push(filteredPatterns.splice(Math.floor(Math.random()*filteredPatterns.length),1)[0]);
   }
   patterns.value.sort();
 };
-const patterns = ref([] as Pattern[])
+const patterns = ref<Pattern[]>([])
 const chosenPattern = defineModel("chosenPattern");
 const scrollToTop = function () {
   window.scrollTo(0, 0);

@@ -1,21 +1,23 @@
 <template>
   <v-card>
     <v-navigation-drawer permanent>
-      <template #prepend>Choose Action Verb to Filter Patterns</template>
+      <template #prepend><v-card><v-card-text>Choose Action Verb to Filter Patterns</v-card-text></v-card></template>
       <v-list
         selectable
         mandatory
         open-strategy="single"
         v-model:selected="chosenActionverb"
       >
-        <v-list-item :value="-1" active-class="active-item">All</v-list-item>
-        <template v-for="(verbsArray, category) in categorizedActionVerbs">
+        <v-list-item :value="-1">All</v-list-item>
+        <template
+          v-for="(verbsArray, category) in store.categorizedActionVerbs"
+        >
           <v-list-group :value="category">
             <template v-slot:activator="{ props }">
               <v-list-item v-bind="props" :title="category"></v-list-item>
             </template>
             <template v-for="verbs of verbsArray">
-              <v-list-item :value="verbs.value" active-class="active-item">
+              <v-list-item class="py-2" :value="verbs.value">
                 <template v-for="verb in verbs.title">
                   <span>{{ verb }} </span>
                   <br />
@@ -41,6 +43,7 @@
           <v-list-item v-bind="props" density="compact"></v-list-item>
         </template>
       </v-autocomplete>
+
       <v-row>
         <v-col v-for="pattern in patterns" xl="3" lg="4" md="6" sm="12">
           <PatternPreviewCard
@@ -56,31 +59,27 @@
         </v-col>
       </v-row>
     </v-container>
-    <PatternBrowser v-else :initial-chosen-pattern="chosenPattern" @back="chosenPattern=null"></PatternBrowser>
+    <PatternBrowser
+      v-else
+      :initial-chosen-pattern="chosenPattern"
+      @back="chosenPattern = null"
+    ></PatternBrowser>
   </v-card>
 </template>
 <script setup lang="ts">
-import { computed } from "vue";
-import PatternCard from "./PatternCard.vue";
+import { computed, watch } from "vue";
 import PatternPreviewCard from "./PatternPreviewCard.vue";
 import PatternBrowser from "./PatternBrowser.vue";
+import { usePatternsAndActionverbsStore } from "../stores/patternsAndActionverbs";
+import { Pattern } from "../types/types";
+const store = usePatternsAndActionverbsStore();
 const chosenActionverb = defineModel("chosenActionverb", { default: [-1] });
-const categorizedActionVerbs = window.resources.categorizedActionVerbs as {
-  [key: string]: string[][];
-};
-const patterns = computed(() => {
-  return window.resources.patterns.filter((pattern) => {
-    if (chosenActionverb.value[0] === -1) return true;
-    return Object.entries(pattern.actionVerbs)[chosenActionverb.value[0]][1];
-  });
-});
-const chosenPattern = defineModel("chosenPattern");
+watch(()=> chosenActionverb.value, (oldVal, newVal) => {if(oldVal[0] != newVal[0]) scrollToTop();})
+const patterns = computed(() =>
+  store.filteredPatterns(chosenActionverb.value[0])
+);
+const chosenPattern = defineModel<null|Pattern>("chosenPattern");
 const scrollToTop = function () {
   window.scrollTo(0, 0);
 };
 </script>
-<style>
-.active-item {
-  background-color: rgb(162, 204, 190);
-}
-</style>

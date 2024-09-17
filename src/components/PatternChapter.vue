@@ -17,6 +17,7 @@
               </template>
               <PatternPreviewCard
                 :patternTitle="element.targetName as string"
+                :is-tooltip="true"
               ></PatternPreviewCard>
             </v-tooltip>
           </template>
@@ -29,9 +30,9 @@
   </v-card-text>
 </template>
 <script setup lang="ts">
-import { Row } from "./PatternCard.vue";
+import { Row } from "../types/types";
 import PatternPreviewCard from "./PatternPreviewCard.vue";
-const props = defineProps<{ title: string; rows: { [key: string]: Row } }>();
+defineProps<{ title: string; rows: Row[] }>();
 const emit = defineEmits(["linkClicked"]);
 </script>
 <style>

@@ -51,7 +51,10 @@
 </template>
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import PatternCard, { Pattern } from "./PatternCard.vue";
+import PatternCard from "./PatternCard.vue";
+import { usePatternsAndActionverbsStore } from "../stores/patternsAndActionverbs";
+import { Pattern } from "../types/types";
+const store = usePatternsAndActionverbsStore()
 const props = defineProps(["initialChosenPattern"]);
 
 const chosenPattern = ref(props.initialChosenPattern);
@@ -64,7 +67,7 @@ watch(
 const scrollToTop = function () {
   window.scrollTo(0, 0);
 };
-const handleLinkClick = function (targetName) {
+const handleLinkClick = function (targetName:string) {
   if (history.value.length > currentlyShownPatternIndex.value + 1) {
     history.value.splice(
       currentlyShownPatternIndex.value + 1,
@@ -72,14 +75,14 @@ const handleLinkClick = function (targetName) {
     );
   }
   currentlyShownPatternIndex.value++;
-  chosenPattern.value = (window.resources.patterns as { title: string }[]).find(
+  chosenPattern.value = (store.patterns as { title: string }[]).find(
     (pattern) => pattern["title"] && pattern.title === targetName
   );
   history.value.push(chosenPattern.value);
   scrollToTop();
 };
 const emit = defineEmits(["back"]);
-const history = ref([props.initialChosenPattern] as Pattern[]);
+const history = ref<Pattern[]>([props.initialChosenPattern]);
 const currentlyShownPatternIndex = ref(0);
 const goBackInHistory = function () {
   currentlyShownPatternIndex.value--;
